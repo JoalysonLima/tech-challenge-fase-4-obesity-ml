@@ -1,0 +1,36 @@
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Virtual environment
+.venv/
+venv/
+env/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Data
+!data/raw/README.md
+!data/processed/README.md
+
+# Models
+models/*
+!models/README.md
+!models/final_model.joblib
+
+# Environment variables
+.env
+.env.*
+
+# Logs
+*.log
+logs/
+
+# System files
+.DS_Store
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
