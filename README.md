@@ -2,7 +2,7 @@
 
 ## 1. Visão Geral do Projeto
 
-Este projeto visa desenvolver uma solução de Machine Learning para auxiliar profissionais de saúde na previsão do nível de obesidade de um paciente com base em dados demográficos, perfil corporal, de estilo de vida e comportamentais.
+A obesidade é uma condição médica caracterizada pelo acúmulo excessivo de gordura corporal, a ponto de prejudicar a saúde. Esse problema tem se tornado cada vez mais prevalente em todo o mundo, atingindo pessoas de todas as idades e classes sociais. As causas da obesidade são multifatoriais e envolvem uma combinação de fatores genéticos, ambientais e comportamentais. Este projeto visa desenvolver uma solução de Machine Learning para auxiliar profissionais de saúde na previsão do nível de obesidade de um paciente com base em dados demográficos, perfil corporal, de estilo de vida e comportamentais.
 
 A solução inclui:
 - um pipeline completo de Machine Learning;
