@@ -1,0 +1,60 @@
+{
+    "model_name": "RandomForestClassifier",
+    "target": "nivel_obesidade",
+    "classes": [
+        "Insufficient_Weight",
+        "Normal_Weight",
+        "Overweight_Level_I",
+        "Overweight_Level_II",
+        "Obesity_Type_I",
+        "Obesity_Type_II",
+        "Obesity_Type_III"
+    ],
+    "features_used": [
+        "genero",
+        "idade",
+        "altura",
+        "peso",
+        "historico_familia_sobrepeso",
+        "freq_alimentos_caloricos",
+        "freq_consumo_vegetais",
+        "num_refeicoes_diarias",
+        "consumo_lanches_entre_refeicoes",
+        "fumante",
+        "consumo_diario_agua",
+        "monitora_calorias_dia",
+        "freq_exercicios",
+        "tempo_dispositivos_eletronicos",
+        "consumo_alcool",
+        "meio_transporte"
+    ],
+    "excluded_features": [
+        "altura",
+        "peso",
+        "IMC"
+    ],
+    "engineered_features": [
+        "faixa_etaria",
+        "transporte_ativoscore_lifestyle"
+    ],
+    "metrics": {
+        "model_name": "RandomForestClassifier",
+        "model_type": "obesity_multiclass_classification",
+        "excluded_features": [
+            "altura",
+            "peso",
+            "IMC"
+        ],
+        "accuracy": 0.801,
+        "f1_macro": 0.7939,
+        "f1_weighted": 0.7988,
+        "precision_macro": 0.7985,
+        "recall_macro": 0.7962
+    },
+    "decisao_metodologica": "Altura, peso e IMC foram exclu\u00eddos para reduzir a domin\u00e2ncia de medidas corporais.e avaliar o poder preditivo de vari\u00e1veis demogr\u00e1ficas e relacionadas ao estilo de vida.",
+    "notas": [
+        "O modelo destina-se a ser uma ferramenta de apoio \u00e0 decis\u00e3o cl\u00ednica.",
+        "O modelo n\u00e3o substitui o diagn\u00f3stico m\u00e9dico.",
+        "O modelo n\u00e3o utiliza medidas corporais diretas."
+    ]
+}
