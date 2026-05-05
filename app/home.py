@@ -231,7 +231,6 @@ pagina = st.sidebar.radio(
     [
         "Visão Geral",
         "Sistema Preditivo",
-        "Dashboard Analítico",
         "Performance do Modelo",
         "Notas do Projeto"
     ]
@@ -510,265 +509,22 @@ elif pagina == "Sistema Preditivo":
             "A avaliação final deve ser feita por profissional de saúde."
         )
 
+        resultado_download = {
+        "nível_previsto": predicao,
+        "probabilidade_estimada": round(float(probabilidades_df["Probabilidade"].head(1)), 2),
+        "observacao": "Resultado apenas para apoio à decisão. Não substitui avaliação médica."
+        }
 
-# ============================================================
-# Página 3 - Dashboard Analítico
-# ============================================================
-
-elif pagina == "Dashboard Analítico":
-    st.title("Dashboard Analítico")
-    st.subheader("Principais padrões observados no estudo sobre obesidade")
-
-    st.markdown(
-        """
-        Este painel apresenta uma visão analítica da base utilizada no projeto.
-        O objetivo é apoiar a equipe médica na compreensão dos padrões associados
-        aos diferentes níveis de obesidade.
-        """
-    )
-
-    df_dashboard = df.copy()
-
-    ordem_classes = [
-        "Insufficient_Weight",
-        "Normal_Weight",
-        "Overweight_Level_I",
-        "Overweight_Level_II",
-        "Obesity_Type_I",
-        "Obesity_Type_II",
-        "Obesity_Type_III"
-    ]
-
-    classes_disponiveis = [
-        classe for classe in ordem_classes
-        if classe in df_dashboard["Obesity"].unique()
-    ]
-
-    st.markdown("### Filtros")
-
-    filtro_1, filtro_2, filtro_3 = st.columns(3)
-
-    with filtro_1:
-        generos_selecionados = st.multiselect(
-            "Gênero",
-            options=sorted(df_dashboard["Gender"].unique()),
-            default=sorted(df_dashboard["Gender"].unique())
+        st.download_button(
+            label="Baixar resultado em JSON",
+            data=json.dumps(resultado_download, indent=4, ensure_ascii=False),
+            file_name="resultado_predicao_obesidade.json",
+            mime="application/json"
         )
-
-    with filtro_2:
-        historico_selecionado = st.multiselect(
-            "Histórico familiar",
-            options=sorted(df_dashboard["family_history"].unique()),
-            default=sorted(df_dashboard["family_history"].unique())
-        )
-
-    with filtro_3:
-        transporte_selecionado = st.multiselect(
-            "Meio de transporte",
-            options=sorted(df_dashboard["MTRANS"].unique()),
-            default=sorted(df_dashboard["MTRANS"].unique())
-        )
-
-    df_filtrado = df_dashboard[
-        (df_dashboard["Gender"].isin(generos_selecionados))
-        & (df_dashboard["family_history"].isin(historico_selecionado))
-        & (df_dashboard["MTRANS"].isin(transporte_selecionado))
-    ].copy()
-
-    st.markdown("### Indicadores principais")
-
-    kpi_1, kpi_2, kpi_3, kpi_4 = st.columns(4)
-
-    with kpi_1:
-        st.metric("Registros analisados", f"{len(df_filtrado):,}")
-
-    with kpi_2:
-        proporcao_obesidade = df_filtrado["Obesity"].str.contains("Obesity").mean() * 100
-        st.metric("Classes de obesidade", f"{proporcao_obesidade:.1f}%")
-
-    with kpi_3:
-        proporcao_historico = (df_filtrado["family_history"] == "yes").mean() * 100
-        st.metric("Histórico familiar: sim", f"{proporcao_historico:.1f}%")
-
-    with kpi_4:
-        proporcao_alimento_calorico = (df_filtrado["FAVC"] == "yes").mean() * 100
-        st.metric("Alimento calórico frequente", f"{proporcao_alimento_calorico:.1f}%")
-
-    st.markdown("---")
-
-    grafico_1, grafico_2 = st.columns(2)
-
-    with grafico_1:
-        contagem_obesidade = (
-            df_filtrado["Obesity"]
-            .value_counts()
-            .reindex(classes_disponiveis)
-            .reset_index()
-        )
-
-        contagem_obesidade.columns = ["Classe de obesidade", "Quantidade"]
-        contagem_obesidade["Classe traduzida"] = contagem_obesidade["Classe de obesidade"].apply(
-            traduzir_classe_obesidade
-        )
-
-        fig = px.bar(
-            contagem_obesidade,
-            x="Classe traduzida",
-            y="Quantidade",
-            title="Distribuição das classes de obesidade"
-        )
-
-        fig.update_layout(
-            xaxis_title="Classe",
-            yaxis_title="Quantidade",
-            xaxis_tickangle=-35
-        )
-
-        st.plotly_chart(fig, use_container_width=True)
-
-    with grafico_2:
-        fig = px.box(
-            df_filtrado,
-            x="Obesity",
-            y="Age",
-            category_orders={"Obesity": classes_disponiveis},
-            title="Distribuição da idade por classe de obesidade"
-        )
-
-        fig.update_layout(
-            xaxis_title="Classe de obesidade",
-            yaxis_title="Idade",
-            xaxis_tickangle=-35
-        )
-
-        st.plotly_chart(fig, use_container_width=True)
-
-    grafico_3, grafico_4 = st.columns(2)
-
-    with grafico_3:
-        tabela_historico = (
-            pd.crosstab(
-                df_filtrado["family_history"],
-                df_filtrado["Obesity"],
-                normalize="index"
-            ) * 100
-        )
-
-        tabela_historico = tabela_historico.reset_index().melt(
-            id_vars="family_history",
-            var_name="Classe de obesidade",
-            value_name="Percentual"
-        )
-
-        tabela_historico["Classe traduzida"] = tabela_historico["Classe de obesidade"].apply(
-            traduzir_classe_obesidade
-        )
-
-        fig = px.bar(
-            tabela_historico,
-            x="family_history",
-            y="Percentual",
-            color="Classe traduzida",
-            title="Distribuição das classes por histórico familiar",
-            barmode="stack"
-        )
-
-        fig.update_layout(
-            xaxis_title="Histórico familiar",
-            yaxis_title="Percentual (%)",
-            legend_title="Classe"
-        )
-
-        st.plotly_chart(fig, use_container_width=True)
-
-    with grafico_4:
-        tabela_favc = (
-            pd.crosstab(
-                df_filtrado["FAVC"],
-                df_filtrado["Obesity"],
-                normalize="index"
-            ) * 100
-        )
-
-        tabela_favc = tabela_favc.reset_index().melt(
-            id_vars="FAVC",
-            var_name="Classe de obesidade",
-            value_name="Percentual"
-        )
-
-        tabela_favc["Classe traduzida"] = tabela_favc["Classe de obesidade"].apply(
-            traduzir_classe_obesidade
-        )
-
-        fig = px.bar(
-            tabela_favc,
-            x="FAVC",
-            y="Percentual",
-            color="Classe traduzida",
-            title="Distribuição das classes por consumo de alimentos calóricos",
-            barmode="stack"
-        )
-
-        fig.update_layout(
-            xaxis_title="Consumo frequente de alimentos calóricos",
-            yaxis_title="Percentual (%)",
-            legend_title="Classe"
-        )
-
-        st.plotly_chart(fig, use_container_width=True)
-
-    grafico_5, grafico_6 = st.columns(2)
-
-    with grafico_5:
-        fig = px.box(
-            df_filtrado,
-            x="Obesity",
-            y="FAF",
-            category_orders={"Obesity": classes_disponiveis},
-            title="Atividade física por classe de obesidade"
-        )
-
-        fig.update_layout(
-            xaxis_title="Classe de obesidade",
-            yaxis_title="Frequência de atividade física",
-            xaxis_tickangle=-35
-        )
-
-        st.plotly_chart(fig, use_container_width=True)
-
-    with grafico_6:
-        fig = px.box(
-            df_filtrado,
-            x="Obesity",
-            y="TUE",
-            category_orders={"Obesity": classes_disponiveis},
-            title="Tempo de uso de tecnologia por classe de obesidade"
-        )
-
-        fig.update_layout(
-            xaxis_title="Classe de obesidade",
-            yaxis_title="Tempo de uso de tecnologia",
-            xaxis_tickangle=-35
-        )
-
-        st.plotly_chart(fig, use_container_width=True)
-
-    st.markdown("### Leitura de negócio")
-
-    st.markdown(
-        """
-        O dashboard permite que a equipe médica observe associações entre os níveis de obesidade
-        e variáveis comportamentais, como histórico familiar, alimentação, atividade física,
-        tempo de uso de dispositivos tecnológicos e meio de transporte.
-
-        As relações observadas devem ser interpretadas como **associações estatísticas**,
-        não como relações causais.
-        """
-    )
 
 
 # ============================================================
-# Página 4 - Performance do Modelo
+# Página 3 - Performance do Modelo
 # ============================================================
 
 elif pagina == "Performance do Modelo":
@@ -816,7 +572,7 @@ elif pagina == "Performance do Modelo":
     )
 
 # ============================================================
-# Página 5 - Notas do Projeto
+# Página 4 - Notas do Projeto
 # ============================================================
 
 elif pagina == "Notas do Projeto":
