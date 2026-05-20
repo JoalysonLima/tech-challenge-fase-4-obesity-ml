@@ -354,7 +354,7 @@ elif pagina == "Sistema Preditivo":
                 min_value=1.0,
                 max_value=3.0,
                 value=2.0,
-                step=0.1,
+                step=1.0,
                 help="Escala aproximada: 1 = raramente, 2 = às vezes, 3 = sempre."
             )
 
@@ -363,7 +363,7 @@ elif pagina == "Sistema Preditivo":
                 min_value=1.0,
                 max_value=4.0,
                 value=3.0,
-                step=0.1,
+                step=1.0,
                 help="Escala aproximada: 1 = uma refeição, 2 = duas, 3 = três, 4 = quatro ou mais."
             )
 
@@ -383,7 +383,7 @@ elif pagina == "Sistema Preditivo":
                 min_value=1.0,
                 max_value=3.0,
                 value=2.0,
-                step=0.1,
+                step=1.0,
                 help="Escala aproximada: 1 = menos de 1L, 2 = entre 1L e 2L, 3 = mais de 2L."
             )
 
@@ -399,7 +399,7 @@ elif pagina == "Sistema Preditivo":
                 min_value=0.0,
                 max_value=3.0,
                 value=1.0,
-                step=0.1,
+                step=1.0,
                 help="Escala aproximada: 0 = nenhuma, 1 = 1-2x/semana, 2 = 3-4x/semana, 3 = 5x ou mais."
             )
 
@@ -408,7 +408,7 @@ elif pagina == "Sistema Preditivo":
                 min_value=0.0,
                 max_value=2.0,
                 value=1.0,
-                step=0.1,
+                step=1.0,
                 help="Escala aproximada: 0 = 0-2h/dia, 1 = 3-5h/dia, 2 = mais de 5h/dia."
             )
 
